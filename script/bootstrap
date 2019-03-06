@@ -152,6 +152,20 @@ install_swiftlint ()
   fi
 }
 
+install_swiftformat ()
+{
+  source script/common/swiftformat
+
+  if type swiftformat > /dev/null
+  then
+    echo ""
+    echo " ✔ SwiftFormat already installed!"
+    echo ""
+  else
+    force_install_swiftformat
+  fi
+}
+
 install_tailor ()
 {
   source script/common/tailor
@@ -189,20 +203,25 @@ main ()
     bundle_install
   fi
 
-  if [ -f Cartfile.resolved ]
-  then
-    install_carthage
-    bootstrap_carthage
-  fi
-
   if [ -f .swiftlint.yml ]
   then
     install_swiftlint
+  fi
+  
+  if [ -n $USE_SWIFTFORMAT ]
+  then
+    install_swiftformat
   fi
 
   if [ -f .tailor.yml ]
   then
     install_tailor
+  fi
+
+  if [ -f Cartfile ]
+  then
+    install_carthage
+    bootstrap_carthage
   fi
 
   if [ -f Podfile ]
